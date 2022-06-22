@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
-import '../../models/universities.dart';
+import '../../models/university.dart';
 import '../webclient.dart';
 
 class TransactionWebClient {

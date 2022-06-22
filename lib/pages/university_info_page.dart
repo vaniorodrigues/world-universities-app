@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../models/universities.dart';
+import '../models/university.dart';
 
 // Description of all data from university
 class UniversityInfoPage extends StatelessWidget {
@@ -27,7 +27,7 @@ class UniversityInfoPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text('State: ${university.state!}'),
+            Text('State: ${university.state}'),
             Text('Alpha 2 Code: ${university.alpha2Code}'),
             Text('Domains: ${university.domains.toString()}'),
             Text('Webpages: ${university.webPages.toString()}'),

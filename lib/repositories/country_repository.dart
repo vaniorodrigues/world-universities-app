@@ -1,20 +1,20 @@
-import 'package:worlduniversities/models/countries.dart';
+import 'package:worlduniversities/models/country.dart';
 
 class CountryRepository {
-  static List<Countries> countries = [
-    Countries('Argentina'),
-    Countries('Bolivia'),
-    Countries('Brazil'),
-    Countries('Chile'),
-    Countries('Colombia'),
-    Countries('Ecuador'),
-    Countries('Falkland Islands'),
-    Countries('French Guiana'),
-    Countries('Guyana'),
-    Countries('Paraguay'),
-    Countries('Peru'),
-    Countries('Suriname'),
-    Countries('Uruguay'),
-    Countries('Venezuela'),
+  static List<Country> countries = [
+    Country(0, name: 'Argentina'),
+    Country(0, name: 'Bolivia'),
+    Country(0, name: 'Brazil'),
+    Country(0, name: 'Chile'),
+    Country(0, name: 'Colombia'),
+    Country(0, name: 'Ecuador'),
+    Country(0, name: 'Falkland Islands'),
+    Country(0, name: 'French Guiana'),
+    Country(0, name: 'Guyana'),
+    Country(0, name: 'Paraguay'),
+    Country(0, name: 'Peru'),
+    Country(0, name: 'Suriname'),
+    Country(0, name: 'Uruguay'),
+    Country(0, name: 'Venezuela'),
   ];
 }
