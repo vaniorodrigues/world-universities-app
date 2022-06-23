@@ -1,11 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class University {
-  final int id;
+  int id;
   final String name;
   final String country;
   final String state;
   final String alpha2Code;
   final List<String> domains;
   final List<String> webPages;
+  int isFavorite;
 
   University(
     this.id, {
@@ -15,6 +17,7 @@ class University {
     required this.alpha2Code,
     required this.domains,
     required this.webPages,
+    this.isFavorite = 0,
   });
 
   University.fromJson(Map<String, dynamic> json)
@@ -24,7 +27,8 @@ class University {
         state = json['state'] ?? 'not found',
         alpha2Code = json['alpha_two_code'],
         domains = List<String>.from(json['domains']),
-        webPages = List<String>.from(json['web_pages']);
+        webPages = List<String>.from(json['web_pages']),
+        isFavorite = json['is_favorite'] ?? 0;
 
   // Map<String, dynamic> toMap() {
   //   return <String, dynamic>{
@@ -56,6 +60,6 @@ class University {
 
   @override
   String toString() {
-    return 'University(id: $id, name: $name, country: $country, state: $state, alpha2Code: $alpha2Code, domains: $domains, webPages: $webPages)';
+    return 'University(id: $id, name: $name, country: $country, state: $state, alpha2Code: $alpha2Code, domains: $domains, webPages: $webPages, isFavorite: $isFavorite)';
   }
 }

@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:worlduniversities/database/dao/country_dao.dart';
 import 'package:worlduniversities/repositories/country_repository.dart';
 
-import '../database/dao/university_dao.dart';
 import '../models/country.dart';
 import '../widgets/circular_progress.dart';
+import '../widgets/download_icon.dart';
 import 'universities_list_page.dart';
-
-// FIXME: needs to add the number of universities of each country of the list.
-// Needs to show if a country is available on database or not.
 
 class CountriesListPage extends StatefulWidget {
   const CountriesListPage({Key? key}) : super(key: key);
@@ -23,9 +20,7 @@ class _CountriesListPageState extends State<CountriesListPage> {
 
   @override
   Widget build(BuildContext context) {
-    _dao.initializeCountriesDatabase(
-        _countries); //Initialize the database with the countries data.
-    debugPrint('------------ EXECUTING BUILD OF _CountriesListPAGEState');
+    _dao.initializeCountriesDatabase(_countries);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select a Country in South America'),
@@ -48,8 +43,10 @@ class _CountriesListPageState extends State<CountriesListPage> {
                   onClick: (index) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
-                            builder: (context) =>
-                                UniversitiesListPage(index: index)))
+                            builder: (context) => UniversitiesListPage(
+                                  index: index,
+                                  countries: countries,
+                                )))
                         .then((value) => setState(() {}));
                   },
                 );
@@ -80,9 +77,7 @@ class _CountriesListViewBuilder extends StatelessWidget {
         // debugPrint('countries name: ${countries[index].name}');
         return Card(
           child: ListTile(
-            trailing: Icon(Icons.download_for_offline_rounded,
-                color: _colorPicker(countries[index].isLocalDataAvailable),
-                size: 24),
+            trailing: DownloadIcon(countries[index].isLocalDataAvailable),
             onTap: () {
               onClick(index);
             },
@@ -100,10 +95,4 @@ class _CountriesListViewBuilder extends StatelessWidget {
       },
     );
   }
-}
-
-Color _colorPicker(int isLocalDataAvailable) {
-  Color color;
-  (isLocalDataAvailable == 1) ? color = Colors.green : color = Colors.grey;
-  return color;
 }

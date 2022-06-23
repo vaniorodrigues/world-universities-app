@@ -21,11 +21,9 @@ class CenteredMessage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Visibility(
-            child: Icon(
-              icon,
-              size: iconSize,
-            ),
+          Icon(
+            icon,
+            size: iconSize,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 24.0),

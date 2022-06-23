@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:worlduniversities/repositories/country_repository.dart';
 
 import '../../models/country.dart';
 import '../database.dart';
@@ -42,7 +41,7 @@ class CountryDao {
     final Database database = await getCountryDatabase();
     List<Country> countries = _toList(await database.query(_tableName));
     for (Country country in countries) {
-      debugPrint('CURRENT DATABASE (FINDALL): ${country.toString()}');
+      debugPrint('CountryDao.findAll. country: ${country.toString()}');
     }
     return countries;
   }
@@ -62,25 +61,9 @@ class CountryDao {
   }
 
   Future<void> updateCountry(Country country) async {
-    debugPrint(
-        '==========>TRYING TO UPDATE FOR THE 100X TIME: ${country.toString()}');
     final Database database = await getCountryDatabase();
     Map<String, dynamic> countryMap = _toMap(country);
-    database.update(
-      _tableName,
-      countryMap,
-      where: '$_id = ?',
-      whereArgs: [country.id],
-    );
-    findAll();
-  }
-
-  Future<void> save(Country country) async {
-    final Database database = await getCountryDatabase();
-    Map<String, dynamic> countryMap = _toMap(country);
-    database.insert(_tableName, countryMap);
-    ConflictAlgorithm.replace;
-    debugPrint(
-        '==========>SAVING COUNTRY CountryDao.updateFoundUniversities. countryOnDB: $country');
+    database.update(_tableName, countryMap,
+        where: '$_id = ?', whereArgs: [country.id]);
   }
 }

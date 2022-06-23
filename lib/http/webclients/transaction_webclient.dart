@@ -20,8 +20,9 @@ class TransactionWebClient {
     final Response response =
         await client.get(Uri.parse('$baseUrl/search?country=$country'));
     final List<dynamic> decodedJson = jsonDecode(response.body);
-    return decodedJson
-        .map((dynamic json) => University.fromJson(json))
-        .toList();
+    final List<University> universities =
+        decodedJson.map((dynamic json) => University.fromJson(json)).toList();
+    universities.sort((a, b) => a.name.compareTo(b.name));
+    return universities;
   }
 }
