@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-
-import '../../models/university.dart';
-import '../webclient.dart';
+import 'package:worlduniversities/http/webclient.dart';
+import 'package:worlduniversities/models/university.dart';
 
 class TransactionWebClient {
   Future<List<University>> findAll() async {

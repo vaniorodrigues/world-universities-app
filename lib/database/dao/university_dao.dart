@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../../models/university.dart';
-import '../database.dart';
+import 'package:worlduniversities/database/database.dart';
+import 'package:worlduniversities/models/university.dart';
 
 // DAO - Data Access Object
 class UniversityDao {

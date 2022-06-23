@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:worlduniversities/database/dao/country_dao.dart';
 import 'package:worlduniversities/database/dao/university_dao.dart';
+import 'package:worlduniversities/http/webclients/transaction_webclient.dart';
+import 'package:worlduniversities/models/country.dart';
 import 'package:worlduniversities/models/university.dart';
+import 'package:worlduniversities/widgets/centered_message.dart';
+import 'package:worlduniversities/widgets/circular_progress.dart';
 import 'package:worlduniversities/widgets/favorite_button.dart';
 
-import '../database/dao/country_dao.dart';
-import '../http/webclients/transaction_webclient.dart';
-import '../widgets/centered_message.dart';
-import '../widgets/circular_progress.dart';
-import '../models/country.dart';
 import 'university_info_page.dart';
 
 class UniversitiesListPage extends StatelessWidget {
@@ -80,29 +80,21 @@ class _GetUniversitiesState extends State<_GetUniversities> {
           case ConnectionState.active:
             break;
           case ConnectionState.done:
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               final List<University> universities = snapshot.data!;
-              if (universities.isNotEmpty) {
-                return _UniversityListViewBuilder(
-                  universities: universities,
-                  daoUni: widget._daoUni,
-                  onClick: (university) {
-                    Navigator.of(context)
-                        .push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                UniversityInfoPage(university),
-                          ),
-                        )
-                        .then((value) => setState(() {}));
-                  },
-                );
-              }
-              return const CenteredMessage(
-                  message: 'No universities found.', icon: Icons.error_outline);
+              return _UniversityListViewBuilder(
+                universities: universities,
+                daoUni: widget._daoUni,
+                onClick: (university) {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                          builder: (context) => UniversityInfoPage(university)))
+                      .then((value) => setState(() {}));
+                },
+              );
             }
             return const CenteredMessage(
-                message: 'No data found!', icon: Icons.warning);
+                message: 'No universities found.', icon: Icons.error_outline);
         }
         return const CenteredMessage(
             message: 'Unknown Error', icon: Icons.warning);
@@ -163,6 +155,13 @@ class _UniversityListViewBuilder extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w400,
+              ),
+            ),
+            subtitle: Text(
+              'State/Province: ${university.state}',
+              style: const TextStyle(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w300,
               ),
             ),
           ),

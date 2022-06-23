@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:worlduniversities/database/dao/university_dao.dart';
+import 'package:worlduniversities/models/university.dart';
+import 'package:worlduniversities/widgets/favorite_button.dart';
 
-import '../models/university.dart';
-import '../widgets/favorite_button.dart';
-
-// Description of all data from university
 class UniversityInfoPage extends StatelessWidget {
-  final University
-      university; //should this be final thought? I am changing the value of university in the build method.
+  final University university;
   final UniversityDao _daoUni = UniversityDao();
 
   UniversityInfoPage(this.university, {Key? key}) : super(key: key);

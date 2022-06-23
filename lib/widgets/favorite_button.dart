@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../database/dao/university_dao.dart';
-import '../models/university.dart';
+import 'package:worlduniversities/database/dao/university_dao.dart';
+import 'package:worlduniversities/models/university.dart';
 
 class FavoriteButton extends StatefulWidget {
   const FavoriteButton({

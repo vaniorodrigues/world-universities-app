@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 class University {
   int id;
   final String name;
@@ -13,7 +12,7 @@ class University {
     this.id, {
     required this.name,
     required this.country,
-    this.state = 'not found',
+    required this.state,
     required this.alpha2Code,
     required this.domains,
     required this.webPages,
@@ -24,7 +23,7 @@ class University {
       : id = json['id'] ?? 0,
         name = json['name'],
         country = json['country'],
-        state = json['state'] ?? 'not found',
+        state = json['state'] ?? 'not defined',
         alpha2Code = json['alpha_two_code'],
         domains = List<String>.from(json['domains']),
         webPages = List<String>.from(json['web_pages']),
