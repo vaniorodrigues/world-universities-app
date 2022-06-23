@@ -19,22 +19,14 @@ class CountryDao {
   static const String _foundUniversities = 'foundUniversities';
   static const String _isLocalDataAvailable = 'isLocalDataAvailable';
 
-  void initializeCountries(List<Country> countries) async {
+  void initializeCountriesDatabase(List<Country> countries) async {
     final Database database = await getCountryDatabase();
     List<Country> countriesOnDB = _toList(await database.query(_tableName));
     if (countriesOnDB.isEmpty) {
       for (Country country in countries) {
         Map<String, dynamic> countryMap = _toMap(country);
-        debugPrint('CountryDao.saveAll. countryMap: $countryMap');
         database.insert(_tableName, countryMap);
-        debugPrint(
-            '=========>DEBUG PRINT #1 (saveall): countriesOnDB IS empty<=========');
       }
-    }
-    debugPrint(
-        '==========>DEBUG PRINT #2 (saveall): countriesOnDB IS NOT empty<=========');
-    for (Country country in countriesOnDB) {
-      debugPrint('CountryDao.saveAll. countryOnDB: $country');
     }
   }
 
@@ -46,10 +38,12 @@ class CountryDao {
     return countryMap;
   }
 
-  // Gets all countries from the database.
   Future<List<Country>> findAll() async {
     final Database database = await getCountryDatabase();
     List<Country> countries = _toList(await database.query(_tableName));
+    for (Country country in countries) {
+      debugPrint('CURRENT DATABASE (FINDALL): ${country.toString()}');
+    }
     return countries;
   }
 
@@ -67,24 +61,26 @@ class CountryDao {
     return countries;
   }
 
-  void updateFoundUniversities(Country country) async {
+  Future<void> updateCountry(Country country) async {
     debugPrint(
-        'BEFORE CountryDao.updateFoundUniversities. countryOnDB: $country');
+        '==========>TRYING TO UPDATE FOR THE 100X TIME: ${country.toString()}');
     final Database database = await getCountryDatabase();
     Map<String, dynamic> countryMap = _toMap(country);
     database.update(
       _tableName,
       countryMap,
-      where: '$_foundUniversities = ?',
-      whereArgs: [country.foundUniversities],
+      where: '$_id = ?',
+      whereArgs: [country.id],
     );
-    database.update(
-      _tableName,
-      countryMap,
-      where: '$_isLocalDataAvailable = ?',
-      whereArgs: [country.isLocalDataAvailable],
-    );
+    findAll();
+  }
+
+  Future<void> save(Country country) async {
+    final Database database = await getCountryDatabase();
+    Map<String, dynamic> countryMap = _toMap(country);
+    database.insert(_tableName, countryMap);
+    ConflictAlgorithm.replace;
     debugPrint(
-        'AFTER CountryDao.updateFoundUniversities. countryOnDB: $country');
+        '==========>SAVING COUNTRY CountryDao.updateFoundUniversities. countryOnDB: $country');
   }
 }

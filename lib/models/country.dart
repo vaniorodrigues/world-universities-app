@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Country {
   final int id;
   final String name;
@@ -18,6 +19,7 @@ class Country {
         isLocalDataAvailable = json['isLocalDataAvailable'];
 
   @override
-  String toString() =>
-      'Countries(name: $name, foundUniversities: $foundUniversities, isLocalDataAvailable: $isLocalDataAvailable)';
+  String toString() {
+    return 'Country(id: $id, name: $name, foundUniversities: $foundUniversities, isLocalDataAvailable: $isLocalDataAvailable)';
+  }
 }

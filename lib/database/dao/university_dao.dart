@@ -27,7 +27,7 @@ class UniversityDao {
   Future<int> save(University university) async {
     final Database database = await getUniversityDatabase();
     Map<String, dynamic> universityMap = _toMap(university);
-    debugPrint('UniversityDao.save. universityMap: $universityMap');
+    // debugPrint('UniversityDao.save. universityMap: $universityMap');
     return database.insert(_tableName, universityMap);
   }
 
@@ -55,9 +55,9 @@ class UniversityDao {
     final Database database = await getUniversityDatabase();
     List<University> universities = _toList(await database
         .query(_tableName, where: '$_country = ?', whereArgs: [country]));
-    for (University university in universities) {
-      debugPrint('UniversityDao.findByCountry: university: $university');
-    }
+    // for (University university in universities) {
+    //   debugPrint('UniversityDao.findByCountry: university: $university');
+    // }
     return universities;
   }
 

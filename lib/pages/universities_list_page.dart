@@ -10,16 +10,13 @@ import '../widgets/circular_progress.dart';
 import '../models/country.dart';
 import 'university_info_page.dart';
 
-// FIXME:
-// - the isLocalDataAvailable needs to be saved in the database, otherwise it will be false everytime the app is reopened.
+// ? the isLocalDataAvailable needs to be saved in the database, otherwise it will be false everytime the app is reopened.
 
 class UniversitiesListPage extends StatefulWidget {
-  final String country;
+  // final String country;
   final int index;
 
-  const UniversitiesListPage(
-      {Key? key, required this.country, required this.index})
-      : super(key: key);
+  const UniversitiesListPage({Key? key, required this.index}) : super(key: key);
 
   @override
   State<UniversitiesListPage> createState() => _UniversitiesListPageState();
@@ -36,7 +33,7 @@ class _UniversitiesListPageState extends State<UniversitiesListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Universities in ${widget.country}'),
+        title: Text('Universities in ${countries[widget.index].name}'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       // Tests if the country has already been searched in the web api, if so, shows the database data.
@@ -44,6 +41,7 @@ class _UniversitiesListPageState extends State<UniversitiesListPage> {
           ? _GetUniversitiesFromDB(
               dao: _daoUni,
               widget: widget,
+              countries: countries,
             )
           : _GetUniversitiesFromAPI(
               webClient: _webClient,
@@ -61,18 +59,20 @@ class _GetUniversitiesFromDB extends StatelessWidget {
     Key? key,
     required UniversityDao dao,
     required this.widget,
+    required this.countries,
   })  : _dao = dao,
         super(key: key);
 
   final UniversityDao _dao;
   final UniversitiesListPage widget;
+  final List<Country> countries;
 
   @override
   Widget build(BuildContext context) {
     debugPrint('getting from DB');
     return FutureBuilder<List<University>>(
         initialData: const [],
-        future: _dao.findByCountry(widget.country),
+        future: _dao.findByCountry(countries[widget.index].name),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -113,7 +113,7 @@ class _GetUniversitiesFromAPI extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('getting from API');
     return FutureBuilder<List<University>>(
-      future: _webClient.findByCountry(widget.country),
+      future: _webClient.findByCountry(countries[widget.index].name),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -131,7 +131,8 @@ class _GetUniversitiesFromAPI extends StatelessWidget {
               // Updates the country's isLocalDataAvailable to 1 to indicate that the data is available in the database, also updates the number of universities in the country.
               countries[widget.index].foundUniversities = universities.length;
               countries[widget.index].isLocalDataAvailable = 1;
-              _daoCountry.updateFoundUniversities(countries[widget.index]);
+              _daoCountry.updateCountry(countries[widget.index]);
+              // _daoCountry.save(countries[widget.index]);
 
               if (universities.isNotEmpty) {
                 return _UniversityListViewBuilder(

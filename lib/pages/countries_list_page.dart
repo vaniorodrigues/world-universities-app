@@ -7,6 +7,9 @@ import '../models/country.dart';
 import '../widgets/circular_progress.dart';
 import 'universities_list_page.dart';
 
+// FIXME: needs to add the number of universities of each country of the list.
+// Needs to show if a country is available on database or not.
+
 class CountriesListPage extends StatefulWidget {
   const CountriesListPage({Key? key}) : super(key: key);
 
@@ -20,9 +23,9 @@ class _CountriesListPageState extends State<CountriesListPage> {
 
   @override
   Widget build(BuildContext context) {
-    _dao.initializeCountries(
+    _dao.initializeCountriesDatabase(
         _countries); //Initialize the database with the countries data.
-
+    debugPrint('------------ EXECUTING BUILD OF _CountriesListPAGEState');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select a Country in South America'),
@@ -40,7 +43,16 @@ class _CountriesListPageState extends State<CountriesListPage> {
                 break;
               case ConnectionState.done:
                 final List<Country> countries = snapshot.data!;
-                return _CountriesListViewBuilder(countries);
+                return _CountriesListViewBuilder(
+                  countries,
+                  onClick: (index) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                            builder: (context) =>
+                                UniversitiesListPage(index: index)))
+                        .then((value) => setState(() {}));
+                  },
+                );
             }
             return const Text('Error in loading the database data');
           }),
@@ -52,9 +64,11 @@ class _CountriesListViewBuilder extends StatelessWidget {
   const _CountriesListViewBuilder(
     this.countries, {
     Key? key,
+    required this.onClick,
   }) : super(key: key);
 
   final List<Country> countries;
+  final Function onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +80,11 @@ class _CountriesListViewBuilder extends StatelessWidget {
         // debugPrint('countries name: ${countries[index].name}');
         return Card(
           child: ListTile(
+            trailing: Icon(Icons.download_for_offline_rounded,
+                color: _colorPicker(countries[index].isLocalDataAvailable),
+                size: 24),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => UniversitiesListPage(
-                            country: countries[index].name,
-                            index: index,
-                          )))
-                  // .then((_) => setState(() {}))
-                  ;
+              onClick(index);
             },
             title: Text(
               countries[index].name,
@@ -82,11 +93,17 @@ class _CountriesListViewBuilder extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            trailing: Text(
+            subtitle: Text(
                 'Universities found: ${countries[index].foundUniversities}'),
           ),
         );
       },
     );
   }
+}
+
+Color _colorPicker(int isLocalDataAvailable) {
+  Color color;
+  (isLocalDataAvailable == 1) ? color = Colors.green : color = Colors.grey;
+  return color;
 }
