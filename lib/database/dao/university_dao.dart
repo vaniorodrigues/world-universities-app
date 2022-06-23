@@ -75,8 +75,8 @@ class UniversityDao {
         country: row[_country],
         state: row[_state],
         alpha2Code: row[_alpha2Code],
-        domains: List<String>.from(row[_domains].split(',')),
-        webPages: List<String>.from(row[_webPages].split(',')),
+        domains: List<String>.from(row[_webPages].split(' ')),
+        webPages: List<String>.from(row[_webPages].split(' ')),
         isFavorite: row[_isFavorite],
       );
       universities.add(university);
@@ -92,8 +92,8 @@ class UniversityDao {
     universityMap[_country] = university.country;
     universityMap[_state] = university.state;
     universityMap[_alpha2Code] = university.alpha2Code;
-    universityMap[_domains] = university.domains.toString();
-    universityMap[_webPages] = university.webPages.toString();
+    universityMap[_domains] = university.domains.join(' ');
+    universityMap[_webPages] = university.webPages.join(' ');
     universityMap[_isFavorite] = university.isFavorite;
     return universityMap;
   }

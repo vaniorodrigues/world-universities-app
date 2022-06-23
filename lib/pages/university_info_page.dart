@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:worlduniversities/database/dao/university_dao.dart';
 import 'package:worlduniversities/models/university.dart';
 import 'package:worlduniversities/widgets/favorite_button.dart';
@@ -19,12 +20,13 @@ class UniversityInfoPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
                   'Country: ${university.country}',
@@ -33,16 +35,41 @@ class UniversityInfoPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text('State: ${university.state}'),
-                Text('Alpha 2 Code: ${university.alpha2Code}'),
-                Text('Domains: ${university.domains.toString()}'),
-                Text('Webpages: ${university.webPages.toString()}'),
+                FavoriteButton(university: university, daoUni: _daoUni),
               ],
             ),
-            FavoriteButton(university: university, daoUni: _daoUni),
+            Text('State: ${university.state}'),
+            Text('Domains: ${university.domains[0]}'),
+            Text('Webpages: ${university.webPages[0]}'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Webpages:'),
+                Column(
+                  children: (university.webPages
+                      .map<Widget>((e) => GestureDetector(
+                            child: Text(e),
+                            onTap: () => {_launchUrl(e)},
+                          ))
+                      .toList()),
+                ),
+              ],
+            ),
+            ElevatedButton(
+                onPressed: () => {_launchUrl(university.webPages[0])},
+                child: const Text('Abrir google')),
           ],
         ),
       ),
     );
+  }
+
+  _launchUrl(String url) async {
+    debugPrint('==============>Trying to open url: $url');
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
