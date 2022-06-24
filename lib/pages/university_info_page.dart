@@ -12,60 +12,99 @@ class UniversityInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('UniversityInfoPage --> university: ${university.toString()}');
     return Scaffold(
       appBar: AppBar(
-        title: Text(university.name),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Details'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //Searchbar textfield to search for universities by name
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text(
-                  'Country: ${university.country}',
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Text(
+                    university.name,
+                    overflow: TextOverflow.clip,
+                    // softWrap: true,
+                    style: const TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 FavoriteButton(university: university, daoUni: _daoUni),
               ],
             ),
-            Text('State: ${university.state}'),
-            Text('Domains: ${university.domains[0]}'),
-            Text('Webpages: ${university.webPages[0]}'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Webpages:'),
-                Column(
-                  children: (university.webPages
-                      .map<Widget>((e) => GestureDetector(
-                            child: Text(e),
-                            onTap: () => {_launchUrl(e)},
-                          ))
-                      .toList()),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                'State: ${university.state}',
+                style: const TextStyle(
+                    fontSize: 20.0, overflow: TextOverflow.ellipsis),
+              ),
             ),
-            ElevatedButton(
-                onPressed: () => {_launchUrl(university.webPages[0])},
-                child: const Text('Abrir google')),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                'Country: ${university.country}',
+                style: const TextStyle(
+                    fontSize: 20.0, overflow: TextOverflow.ellipsis),
+              ),
+            ),
+            _UrlRow(urls: university.domains, title: 'Domains'),
+            _UrlRow(urls: university.webPages, title: 'Webpages'),
           ],
         ),
       ),
     );
   }
+}
+
+class _UrlRow extends StatelessWidget {
+  const _UrlRow({
+    Key? key,
+    required this.urls,
+    required this.title,
+  }) : super(key: key);
+
+  // final University university;
+  final List<String> urls;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+                fontSize: 20.0, overflow: TextOverflow.ellipsis),
+          ),
+          Column(
+            children: (urls
+                .map<Widget>((e) => GestureDetector(
+                      child: Text(e),
+                      onTap: () => {_launchUrl(e)},
+                    ))
+                .toList()),
+          ),
+        ],
+      ),
+    );
+  }
 
   _launchUrl(String url) async {
-    debugPrint('==============>Trying to open url: $url');
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     } else {

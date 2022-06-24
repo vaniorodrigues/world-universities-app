@@ -24,6 +24,7 @@ class _CountriesListPageState extends State<CountriesListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select a Country in South America'),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<Country>>(
         initialData: const [],

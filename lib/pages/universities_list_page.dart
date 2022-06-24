@@ -28,6 +28,7 @@ class UniversitiesListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Universities in ${selectedCountry.name}'),
+        centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
       // Tests if the country has already been searched in the web api, if so, shows the database data.
@@ -124,7 +125,7 @@ class _GetUniversitiesState extends State<_GetUniversities> {
   }
 }
 
-class _UniversityListViewBuilder extends StatelessWidget {
+class _UniversityListViewBuilder extends StatefulWidget {
   const _UniversityListViewBuilder({
     Key? key,
     required this.universities,
@@ -137,36 +138,56 @@ class _UniversityListViewBuilder extends StatelessWidget {
   final Function onClick;
 
   @override
+  State<_UniversityListViewBuilder> createState() =>
+      _UniversityListViewBuilderState();
+}
+
+class _UniversityListViewBuilderState
+    extends State<_UniversityListViewBuilder> {
+  final TextEditingController searchController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      separatorBuilder: ((context, index) => const Divider()),
-      itemCount: universities.length,
-      padding: const EdgeInsets.all(16),
-      itemBuilder: (context, index) {
-        final University university = universities[index];
-        return Card(
-          child: ListTile(
-            trailing: FavoriteButton(university: university, daoUni: daoUni),
-            onTap: () {
-              onClick(university);
-            },
-            title: Text(
-              university.name,
-              style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            subtitle: Text(
-              'State/Province: ${university.state}',
-              style: const TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w300,
-              ),
+    List<University> universities = widget.universities;
+    return Column(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 200,
+            child: ListView.separated(
+              separatorBuilder: ((context, index) => const Divider()),
+              padding: const EdgeInsets.all(16),
+              itemCount: universities.length,
+              itemBuilder: (context, index) {
+                final University university = universities[index];
+                return Card(
+                  child: ListTile(
+                    trailing: FavoriteButton(
+                        university: university, daoUni: widget.daoUni),
+                    onTap: () {
+                      widget.onClick(university);
+                    },
+                    title: Text(
+                      university.name,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'State/Province: ${university.state}',
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
