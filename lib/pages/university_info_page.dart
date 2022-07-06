@@ -15,6 +15,7 @@ class UniversityInfoPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Details'),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
       body: Padding(
@@ -47,16 +48,14 @@ class UniversityInfoPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
                 'State: ${university.state}',
-                style: const TextStyle(
-                    fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
                 'Country: ${university.country}',
-                style: const TextStyle(
-                    fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
               ),
             ),
             _UrlRow(urls: university.domains, title: 'Domains'),
@@ -88,8 +87,7 @@ class _UrlRow extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-                fontSize: 20.0, overflow: TextOverflow.ellipsis),
+            style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
           ),
           Column(
             children: (urls

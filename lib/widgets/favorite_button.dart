@@ -22,9 +22,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        (widget.university.isFavorite == 1)
-            ? widget.university.isFavorite = 0
-            : widget.university.isFavorite = 1;
+        (widget.university.isFavorite == 1) ? widget.university.isFavorite = 0 : widget.university.isFavorite = 1;
         widget._daoUni.updateFavorite(widget.university);
         setState(() {
           // widget.university.isFavorite;
@@ -32,8 +30,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       },
       child: (widget.university.isFavorite == 1)
           ? const Icon(Icons.favorite, color: Colors.red, size: 24)
-          : const Icon(Icons.favorite_border, color: Colors.red, size: 24),
-      // Icon(Icons.favorite_border_sharp),
+          : const Icon(Icons.favorite_border, color: Color.fromARGB(70, 255, 0, 0), size: 24),
     );
   }
 }

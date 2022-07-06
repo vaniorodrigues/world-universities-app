@@ -23,7 +23,11 @@ class _CountriesListPageState extends State<CountriesListPage> {
     _dao.initializeCountriesDatabase(_countries);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select a Country in South America'),
+        title: const Text(
+          'Select a Country in South America',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
       body: FutureBuilder<List<Country>>(
@@ -75,11 +79,19 @@ class _CountriesListViewBuilder extends StatelessWidget {
     return ListView.separated(
       separatorBuilder: ((context, index) => const Divider()),
       itemCount: countries.length,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       itemBuilder: (BuildContext context, int index) {
-        // debugPrint('countries name: ${countries[index].name}');
         return Card(
           child: ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(24.0),
+              child: Image.asset(
+                'assets/${countries[index].name.toLowerCase()}.png',
+                height: 40,
+                width: 40,
+                fit: BoxFit.cover,
+              ),
+            ),
             trailing: DownloadIcon(countries[index].isLocalDataAvailable),
             onTap: () {
               onClick(index);

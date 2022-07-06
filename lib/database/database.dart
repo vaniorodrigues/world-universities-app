@@ -11,11 +11,8 @@ Future<Database> getCountryDatabase() async {
     path,
     onCreate: (db, version) async {
       await db.execute(CountryDao.tableSql);
-      // dao.saveAll();
     },
     version: 1,
-    // onDowngrade:
-    // onDatabaseDowngradeDelete, // apagar o banco de dados, mudar version para 2 para isso
   );
 }
 
@@ -29,7 +26,5 @@ Future<Database> getUniversityDatabase() async {
       await db.execute(UniversityDao.tableSql);
     },
     version: 1,
-    // onDowngrade:
-    //     onDatabaseDowngradeDelete, // apagar o banco de dados, mudar version para 2 para isso
   );
 }

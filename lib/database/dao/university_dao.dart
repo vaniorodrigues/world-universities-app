@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:worlduniversities/database/database.dart';
 import 'package:worlduniversities/models/university.dart';
@@ -28,8 +27,7 @@ class UniversityDao {
   Future<int> save(University university) async {
     final Database database = await getUniversityDatabase();
     List<University> universities = _toList(await database.query(_tableName));
-    university.id = universities.length +
-        1; // Sets the id to the next available id on db, otherwise the favorite university will be overwritten.
+    university.id = universities.length + 1;
     Map<String, dynamic> universityMap = _toMap(university);
     return database.insert(_tableName, universityMap);
   }
@@ -37,32 +35,23 @@ class UniversityDao {
   Future<void> updateFavorite(University university) async {
     final Database database = await getUniversityDatabase();
     Map<String, dynamic> universityMap = _toMap(university);
-    debugPrint(
-        'UniversityDao.updateFavorite. universityMap: id:${university.id} ${university.toString()}');
-    database.update(_tableName, universityMap,
-        where: '$_id = ?', whereArgs: [university.id]);
+    database.update(_tableName, universityMap, where: '$_id = ?', whereArgs: [university.id]);
   }
 
   // Gets all universities from the database.
   Future<List<University>> findAll() async {
     final Database database = await getUniversityDatabase();
     List<University> universities = _toList(await database.query(_tableName));
-    for (University university in universities) {
-      debugPrint('UniversityDao.findAll. university: ${university.toString()}');
-    }
+
     return universities;
   }
 
   // Gets universities by country from the database.
   Future<List<University>> findByCountry(String country) async {
     final Database database = await getUniversityDatabase();
-    List<University> universities = _toList(await database
-        .query(_tableName, where: '$_country = ?', whereArgs: [country]));
+    List<University> universities =
+        _toList(await database.query(_tableName, where: '$_country = ?', whereArgs: [country]));
     universities.sort((a, b) => a.name.compareTo(b.name));
-    for (University university in universities) {
-      debugPrint(
-          'UniversityDao.findByCountry. AFTER SORTING universities: ${university.toString()}');
-    }
     return universities;
   }
 

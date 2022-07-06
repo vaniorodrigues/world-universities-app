@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:worlduniversities/components/university_list_view_builder.dart';
 import 'package:worlduniversities/database/dao/country_dao.dart';
 import 'package:worlduniversities/database/dao/university_dao.dart';
 import 'package:worlduniversities/http/webclients/transaction_webclient.dart';
@@ -6,7 +7,6 @@ import 'package:worlduniversities/models/country.dart';
 import 'package:worlduniversities/models/university.dart';
 import 'package:worlduniversities/widgets/centered_message.dart';
 import 'package:worlduniversities/widgets/circular_progress.dart';
-import 'package:worlduniversities/widgets/favorite_button.dart';
 
 import 'university_info_page.dart';
 
@@ -14,8 +14,7 @@ class UniversitiesListPage extends StatelessWidget {
   final List<Country> countries;
   final int index;
 
-  UniversitiesListPage({Key? key, required this.index, required this.countries})
-      : super(key: key);
+  UniversitiesListPage({Key? key, required this.index, required this.countries}) : super(key: key);
 
   final TransactionWebClient _webClient = TransactionWebClient();
 
@@ -27,7 +26,21 @@ class UniversitiesListPage extends StatelessWidget {
     Country selectedCountry = countries[index];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Universities in ${selectedCountry.name}'),
+        title: Row(
+          children: [
+            Text('Universities in ${selectedCountry.name}'),
+            const Spacer(),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24.0),
+              child: Image.asset(
+                'assets/${countries[index].name.toLowerCase()}.png',
+                height: 40,
+                width: 40,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -83,38 +96,33 @@ class _GetUniversitiesState extends State<_GetUniversities> {
           case ConnectionState.done:
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
               final List<University> universities = snapshot.data!;
-              return _UniversityListViewBuilder(
+              return UniversityListViewBuilder(
                 universities: universities,
                 daoUni: widget._daoUni,
                 onClick: (university) {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => UniversityInfoPage(university)))
+                      .push(MaterialPageRoute(builder: (context) => UniversityInfoPage(university)))
                       .then((value) => setState(() {}));
                 },
               );
             }
-            return const CenteredMessage(
-                message: 'No universities found.', icon: Icons.error_outline);
+            return const CenteredMessage(message: 'No universities found.', icon: Icons.error_outline);
         }
-        return const CenteredMessage(
-            message: 'Unknown Error', icon: Icons.warning);
+        return const CenteredMessage(message: 'Unknown Error', icon: Icons.warning);
       },
     );
   }
 
   Future<List<University>> _loadsUniversities(Country country) async {
     if (country.isLocalDataAvailable == 0) {
-      final List<University> universities =
-          await widget._webClient.findByCountry(country.name);
+      final List<University> universities = await widget._webClient.findByCountry(country.name);
       await _saveUniversitiesDao(universities);
       country.foundUniversities = universities.length;
       country.isLocalDataAvailable = 1;
       await widget._daoCountry.updateCountry(country);
       return universities;
     }
-    List<University> universities =
-        await widget._daoUni.findByCountry(country.name);
+    List<University> universities = await widget._daoUni.findByCountry(country.name);
     return universities;
   }
 
@@ -122,72 +130,5 @@ class _GetUniversitiesState extends State<_GetUniversities> {
     for (final university in universities) {
       await widget._daoUni.save(university);
     }
-  }
-}
-
-class _UniversityListViewBuilder extends StatefulWidget {
-  const _UniversityListViewBuilder({
-    Key? key,
-    required this.universities,
-    required this.daoUni,
-    required this.onClick,
-  }) : super(key: key);
-
-  final List<University> universities;
-  final UniversityDao daoUni;
-  final Function onClick;
-
-  @override
-  State<_UniversityListViewBuilder> createState() =>
-      _UniversityListViewBuilderState();
-}
-
-class _UniversityListViewBuilderState
-    extends State<_UniversityListViewBuilder> {
-  final TextEditingController searchController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    List<University> universities = widget.universities;
-    return Column(
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: 200,
-            child: ListView.separated(
-              separatorBuilder: ((context, index) => const Divider()),
-              padding: const EdgeInsets.all(16),
-              itemCount: universities.length,
-              itemBuilder: (context, index) {
-                final University university = universities[index];
-                return Card(
-                  child: ListTile(
-                    trailing: FavoriteButton(
-                        university: university, daoUni: widget.daoUni),
-                    onTap: () {
-                      widget.onClick(university);
-                    },
-                    title: Text(
-                      university.name,
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'State/Province: ${university.state}',
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }

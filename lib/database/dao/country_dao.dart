@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:worlduniversities/database/database.dart';
 import 'package:worlduniversities/models/country.dart';
@@ -39,9 +38,6 @@ class CountryDao {
   Future<List<Country>> findAll() async {
     final Database database = await getCountryDatabase();
     List<Country> countries = _toList(await database.query(_tableName));
-    for (Country country in countries) {
-      debugPrint('CountryDao.findAll. country: ${country.toString()}');
-    }
     return countries;
   }
 
@@ -62,7 +58,6 @@ class CountryDao {
   Future<void> updateCountry(Country country) async {
     final Database database = await getCountryDatabase();
     Map<String, dynamic> countryMap = _toMap(country);
-    database.update(_tableName, countryMap,
-        where: '$_id = ?', whereArgs: [country.id]);
+    database.update(_tableName, countryMap, where: '$_id = ?', whereArgs: [country.id]);
   }
 }
