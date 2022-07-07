@@ -21,33 +21,113 @@ class UniversityListViewBuilder extends StatefulWidget {
 
 class UniversityListViewBuilderState extends State<UniversityListViewBuilder> {
   final TextEditingController searchController = TextEditingController();
-  bool _toggle = false;
   List<University> universities = [];
+  bool _toggle = false;
+  bool firstTime = true;
 
   @override
   Widget build(BuildContext context) {
-    (_toggle)
-        ? universities = widget.universities.where((university) => university.isFavorite == 1).toList()
-        : universities = widget.universities;
+    (firstTime) ? universities = widget.universities : null;
+    firstTime = false;
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-          child: SwitchListTile(
-            value: _toggle,
-            title: const Text('Only Show Favorites'),
-            secondary: const Icon(
-              Icons.favorite,
-              color: Colors.red,
-            ),
-            activeColor: Colors.red,
-            onChanged: (bool value) {
-              setState(() => _toggle = value);
-            },
-          ),
+        _ToggleFavorites(
+          toggle: _toggle,
+          onChanged: (bool value) {
+            setState(
+              () {
+                _toggle = value;
+                (_toggle)
+                    ? universities = universities.where((university) => university.isFavorite == 1).toList()
+                    : universities = widget.universities;
+              },
+            );
+          },
+        ),
+        _SearchBar(
+          searchController: searchController,
+          onPressed: () {
+            setState(
+              () => universities = widget.universities,
+            );
+          },
+          onChanged: (value) {
+            setState(
+              () => universities = widget.universities
+                  .where((university) => university.name.toLowerCase().contains(value.toLowerCase()))
+                  .toList(),
+            );
+          },
         ),
         _UniversityListView(universities: universities, widget: widget),
       ],
+    );
+  }
+}
+
+class _ToggleFavorites extends StatelessWidget {
+  const _ToggleFavorites({
+    Key? key,
+    required bool toggle,
+    required this.onChanged,
+  })  : _toggle = toggle,
+        super(key: key);
+
+  final bool _toggle;
+  final Function onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+      child: SwitchListTile(
+        value: _toggle,
+        title: const Text('Only Show Favorites'),
+        secondary: const Icon(
+          Icons.favorite,
+          color: Colors.red,
+        ),
+        activeColor: Colors.red,
+        onChanged: (value) => onChanged(value),
+      ),
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({
+    Key? key,
+    required this.searchController,
+    required this.onPressed,
+    required this.onChanged,
+  }) : super(key: key);
+
+  final TextEditingController searchController;
+  final Function onPressed;
+  final Function onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+      child: Card(
+        child: TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            icon: const Icon(Icons.search),
+            contentPadding: const EdgeInsets.all(8.0),
+            labelText: 'Search',
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                searchController.clear();
+                onPressed();
+              },
+            ),
+          ),
+          onChanged: (value) => onChanged(value),
+        ),
+      ),
     );
   }
 }
@@ -65,36 +145,39 @@ class _UniversityListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: SizedBox(
-        height: 200,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: universities.length,
-          itemBuilder: (context, index) {
-            final University university = universities[index];
-            return Card(
-              child: ListTile(
-                trailing: FavoriteButton(university: university, daoUni: widget.daoUni),
-                onTap: () {
-                  widget.onClick(university);
-                },
-                title: Text(
-                  university.name,
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0),
+        child: SizedBox(
+          height: 200,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: universities.length,
+            itemBuilder: (context, index) {
+              final University university = universities[index];
+              return Card(
+                child: ListTile(
+                  trailing: FavoriteButton(university: university, daoUni: widget.daoUni),
+                  onTap: () {
+                    widget.onClick(university);
+                  },
+                  title: Text(
+                    university.name,
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'State/Province: ${university.state}',
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                 ),
-                subtitle: Text(
-                  'State/Province: ${university.state}',
-                  style: const TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
