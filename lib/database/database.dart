@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'dao/country_dao.dart';
 
+import 'dao/country_dao.dart';
 import 'dao/university_dao.dart';
 
 Future<Database> getCountryDatabase() async {
@@ -16,7 +16,6 @@ Future<Database> getCountryDatabase() async {
   );
 }
 
-//
 Future<Database> getUniversityDatabase() async {
   final String path = join(await getDatabasesPath(), 'uni.db');
   // deleteDatabase(path);

@@ -59,6 +59,19 @@ class UniversityListViewBuilderState extends State<UniversityListViewBuilder> {
             );
           },
         ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: Text(
+              '${universities.length} universities found',
+              style: const TextStyle(
+                fontFamily: 'Times New Roman',
+                fontSize: 16,
+                fontWeight: FontWeight.w100,
+              ),
+            ),
+          ),
+        ),
         _UniversityListView(universities: universities, widget: widget),
       ],
     );
@@ -109,7 +122,7 @@ class _SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 0.0),
       child: Card(
         child: TextField(
           controller: searchController,
@@ -145,39 +158,36 @@ class _UniversityListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
-        child: SizedBox(
-          height: 200,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: universities.length,
-            itemBuilder: (context, index) {
-              final University university = universities[index];
-              return Card(
-                child: ListTile(
-                  trailing: FavoriteButton(university: university, daoUni: widget.daoUni),
-                  onTap: () {
-                    widget.onClick(university);
-                  },
-                  title: Text(
-                    university.name,
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'State/Province: ${university.state}',
-                    style: const TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w300,
-                    ),
+      child: SizedBox(
+        height: 200,
+        child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+          itemCount: universities.length,
+          itemBuilder: (context, index) {
+            final University university = universities[index];
+            return Card(
+              child: ListTile(
+                trailing: FavoriteButton(university: university, daoUni: widget.daoUni),
+                onTap: () {
+                  widget.onClick(university);
+                },
+                title: Text(
+                  university.name,
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-              );
-            },
-          ),
+                subtitle: Text(
+                  'State/Province: ${university.state}',
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

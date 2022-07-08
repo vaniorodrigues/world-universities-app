@@ -105,10 +105,14 @@ class _GetUniversitiesState extends State<_GetUniversities> {
                       .then((value) => setState(() {}));
                 },
               );
+            } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+              return const CenteredMessage(message: 'No universities found', icon: Icons.school);
+            } else if (snapshot.hasError) {
+              return const CenteredMessage(message: 'An error has occurred', icon: Icons.error_outline);
             }
-            return const CenteredMessage(message: 'No universities found.', icon: Icons.error_outline);
+            return const CenteredMessage(message: 'No internet connection.', icon: Icons.warning);
         }
-        return const CenteredMessage(message: 'Unknown Error', icon: Icons.warning);
+        return const CenteredMessage(message: 'Unknown Error.', icon: Icons.warning);
       },
     );
   }
@@ -120,14 +124,16 @@ class _GetUniversitiesState extends State<_GetUniversities> {
       country.foundUniversities = universities.length;
       country.isLocalDataAvailable = 1;
       await widget._daoCountry.updateCountry(country);
+      universities.sort((University a, University b) => a.name.compareTo(b.name));
       return universities;
     }
     List<University> universities = await widget._daoUni.findByCountry(country.name);
+    universities.sort((University a, University b) => a.name.compareTo(b.name));
     return universities;
   }
 
   Future<void> _saveUniversitiesDao(List<University> universities) async {
-    for (final university in universities) {
+    for (University university in universities) {
       await widget._daoUni.save(university);
     }
   }
